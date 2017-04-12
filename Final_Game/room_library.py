@@ -10,3 +10,4 @@ class Room():
         self.wr_key_list = pygame.sprite.Group()
         self.dc_key_list = pygame.sprite.Group()
         self.exit_hallway_key_list = pygame.sprite.Group()
+        self.weapons_list = pygame.sprite.Group()

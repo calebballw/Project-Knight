@@ -2,6 +2,7 @@ import pygame
 import wall1
 import room_library
 import knight_library
+import weapon_library
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -21,3 +22,5 @@ class Weapons_Room(room_library.Room):
         for item in walls:
             wall = wall1.Wall(item[0], item[1], item[2], item[3])
             self.wall_list.add(wall)
+            self.weapon = weapon_library.Bow(250, 250)
+            self.weapons_list.add(self.weapon)

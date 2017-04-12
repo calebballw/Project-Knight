@@ -11,7 +11,7 @@ red = (255, 0, 0)
 
 class Prisoner_Lounge(room_library.Room):
     def __init__(self):
-        self.background_image = pygame.image.load("PL.png").convert()
+        self.background_image = pygame.image.load("prisoners lounge.jpg").convert()
         room_library.Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
                   [0,365,20,235], #Left Bottom Wall 

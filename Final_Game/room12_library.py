@@ -10,7 +10,7 @@ red = (255, 0, 0)
 
 class Cafeteria(room_library.Room):
     def __init__(self):
-        self.background_image = pygame.image.load("Cafeteria.png").convert()
+        self.background_image = pygame.image.load("cafeteria.jpg").convert()
         room_library.Room.__init__(self)
         walls = [ [0,0,20,600], #Left Wall
                   [780,0,20,235], #Right Top Wall

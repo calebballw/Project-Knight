@@ -27,9 +27,18 @@ def main():
     game = game_knight.Game()
     #Main Program Loop
     while not done:
-        done = game.process_events()
-        game.run_logic()
-        game.display_screen(screen)
+        dm = game.display_s
+        dn = game.game_start
+        if dm == True:
+            done = game.display_menu()
+            game.display_screen(screen)
+        if dm == False and dn == True:
+            done = game.game_star()
+            game.display_screen(screen)
+        if dm == False and dn == False:
+            done = game.process_events()
+            game.run_logic()
+            game.display_screen(screen)
         clock.tick(60)
     pygame.quit()
 #Play the Game

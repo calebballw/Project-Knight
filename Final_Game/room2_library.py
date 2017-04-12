@@ -10,7 +10,7 @@ red = (255, 0, 0)
 
 class DWR(room_library.Room):
     def __init__(self):
-        self.background_image = pygame.image.load("DWR.png").convert()
+        self.background_image = pygame.image.load("dragon wait room.jpg").convert()
         room_library.Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
                   [0,365,20,235], #Left Bottom 

@@ -10,7 +10,7 @@ red = (255, 0, 0)
 
 class First_Cell(room_library.Room):
     def __init__(self):
-        self.background_image = pygame.image.load("1st_cell.png").convert()
+        self.background_image = pygame.image.load("primary cell.jpg").convert()
         room_library.Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
                   [0,365,20,235], #Left Bottom 
