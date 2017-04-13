@@ -63,6 +63,7 @@ class Game():
         #room setup
         self.current_room_name = 'hallway'
         self.current_room = self.rooms['hallway']
+
         #Player
         self.player = player_library.Player(300, 50)
         self.movingsprites.add(self.player)
@@ -169,6 +170,7 @@ class Game():
             #records that you have a key
             if key_hit_list:
                 self.wr_key_yes = True
+                self.rooms['execution_chamber'].door_open()
             if dc_key_hit_list:
                 self.dragon_key_yes = True
             if eh_key_hit_list:
@@ -188,11 +190,12 @@ class Game():
             if self.player.rect.y < -15:
                 if self.current_room_name == 'torture_chamber':
                     self.change_rooms('DWR')
-                    self.player.rect.y = 600
+                    self.player.rect.y = 550
+                    self.player.rect.x = 440
                 elif self.current_room_name == 'DWR':
                     if self.dragon_key_yes == True:
                         self.change_rooms('dragon_cave')
-                        self.player.rect.y = 600
+                        self.player.rect.y = 550
                     else:
                         self.player.rect.y += 50
                 elif self.current_room_name == 'weapons_room':
@@ -208,12 +211,13 @@ class Game():
                     self.game_over = True
                     self.you_win = True
                 if self.current_room_name != 'DWR':
-                    self.player.rect.y = 600
+                    self.player.rect.y = 550
 
             #Checks to see if you went down and out of the room
-            if self.player.rect.y > 601:
+            if self.player.rect.y > 551:
                 if self.current_room_name == 'DWR':
                     self.change_rooms('torture_chamber')
+                    self.player.rect.x = 350
                 elif self.current_room_name == 'dragon_cave':
                     self.change_rooms('DWR')
                 elif self.current_room_name == 'execution_chamber':
@@ -293,6 +297,7 @@ class Game():
         if not self.game_over and not self.lava_over and not self.display_s and not self.game_start:
             #Displays backround image for each room
             screen.blit(self.current_room.background_image, [0, 0])
+            print ("hi")
             #Displays all the sprites and moving objects
             self.movingsprites.draw(screen)
             self.current_room.wall_list.draw(screen)
