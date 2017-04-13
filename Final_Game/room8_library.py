@@ -15,11 +15,11 @@ class First_Cell(room_library.Room):
         walls = [ [0,0,20,235], #Left Top Wall
                   [0,365,20,235], #Left Bottom 
                   [780,0,20,235], #Right Top Wall
-                  [780,365,20,235], #Right Bottom Wall
-                  [0,0,320,20], #Top Left Wall
-                  [450,0,330,20], #Top Right Wall
-                  [0,580,320,20], #Bottom Left Wall
-                  [450,580,330,20]  #Bottom Right Wall
+                  [780,420,20,235], #Right Bottom Wall
+                  [0,0,360,20], #Top Left Wall
+                  [520,0,330,20], #Top Right Wall
+                  [0,580,360,20], #Bottom Left Wall
+                  [530,580,330,20]  #Bottom Right Wall
                 ]
         for item in walls:
             wall = wall1.Wall(item[0], item[1], item[2], item[3])

@@ -16,7 +16,7 @@ class Second_Cell(room_library.Room):
                   [0,365,20,235], #Left Bottom 
                   [780,0,20,600], #Right Wall
                   [0,0,320,20], #Top Left Wall
-                  [450,0,330,20], #Top Right Wall
+                  [550,0,330,20], #Top Right Wall
                   [0,580,780,20] #Bottom Wall
                 ]
         for item in walls:

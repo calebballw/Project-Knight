@@ -203,8 +203,10 @@ class Game():
                     self.change_rooms('execution_chamber')
                 elif self.current_room_name == 'dragon_cave':
                     self.change_rooms('first_cell')
+                    self.player.rect.x = 385
                 elif self.current_room_name == 'first_cell':
                     self.change_rooms('exit_hallway')
+                    self.player.rect.x = 350
                 elif self.current_room_name == 'second_cell':
                     self.change_rooms('prisoner_lounge')
                 elif self.current_room == 'exit_hallway':
@@ -230,14 +232,16 @@ class Game():
                 elif self.current_room_name == 'exit_hallway':
                     self.change_rooms('first_cell')
                     self.player.rect.y = 0
+                    self.player.rect.x = 400
                 elif self.current_room_name == 'first_cell':
                     if self.dragon_key_yes == True:
                         self.change_rooms('dragon_cave')
                         self.player.rect.y = 0
+                        self.player.rect.x = 350
                     else:
                         self.player.rect.y -= 50
                 elif self.current_room_name == 'prisoner_lounge':
-                    self.change_rooms('exit_hallway')
+                    self.change_rooms('second_cell')
                 if self.current_room_name != 'execution_chamber' and self.current_room_name != 'first_cell':
                     self.player.rect.y = 0
             #Checks to see if you went right and out of the room
@@ -246,6 +250,7 @@ class Game():
                     self.change_rooms('execution_chamber')
                 elif self.current_room_name == 'first_cell':
                     self.change_rooms('second_cell')
+                    self.player.rect.y = 270
                 elif self.current_room_name == 'exit_hallway':
                     self.change_rooms('prisoner_lounge')
                 elif self.current_room_name == 'cafeteria':
