@@ -1,19 +1,19 @@
 import pygame
 import wall1
 import player_library
-import room_library
-import room1_library
-import room2_library
-import room3_library
-import room4_library
-import room5_library
-import room6_library
-import room7_library
-import room8_library
-import room9_library
-import room10_library
-import room11_library
-import room12_library
+import room
+from torture_chamber import Torture_Chamber
+from dwr import DWR
+from dragon_cave import Dragon_Cave
+from weapons_room import Weapons_Room
+from execution_chamber import Execution_Chamber
+from hallway import Hallway
+from lava_pit import Lava_Pit
+from first_cell import First_Cell
+from exit_hallway import Exit_Hallway
+from second_cell import Second_Cell
+from prisoner_lounge import Prisoner_Lounge
+from cafeteria import Cafeteria
 import knight_library
 import bullet_library
 #Define some colors
@@ -47,18 +47,18 @@ class Game():
         self.movingsprites = pygame.sprite.Group()
         self.bullet_list = pygame.sprite.Group()
 
-        self.rooms['torture_chamber'] = room1_library.Torture_Chamber()
-        self.rooms['DWR'] = room2_library.DWR()
-        self.rooms['dragon_cave'] = room3_library.Dragon_Cave()
-        self.rooms['weapons_room'] = room4_library.Weapons_Room()
-        self.rooms['execution_chamber'] = room5_library.Execution_Chamber()
-        self.rooms['hallway'] = room6_library.Hallway()
-        self.rooms['lava_pit'] = room7_library.Lava_Pit()
-        self.rooms['first_cell'] = room8_library.First_Cell()
-        self.rooms['exit_hallway'] = room9_library.Exit_Hallway()
-        self.rooms['second_cell'] = room10_library.Second_Cell()
-        self.rooms['prisoner_lounge'] = room11_library.Prisoner_Lounge()
-        self.rooms['cafeteria'] = room12_library.Cafeteria()
+        self.rooms['torture_chamber'] = Torture_Chamber()
+        self.rooms['DWR'] = DWR()
+        self.rooms['dragon_cave'] = Dragon_Cave()
+        self.rooms['weapons_room'] = Weapons_Room()
+        self.rooms['execution_chamber'] = Execution_Chamber()
+        self.rooms['hallway'] = Hallway()
+        self.rooms['lava_pit'] = Lava_Pit()
+        self.rooms['first_cell'] = First_Cell()
+        self.rooms['exit_hallway'] = Exit_Hallway()
+        self.rooms['second_cell'] = Second_Cell()
+        self.rooms['prisoner_lounge'] = Prisoner_Lounge()
+        self.rooms['cafeteria'] = Cafeteria()
 
         #room setup
         self.current_room_name = 'hallway'
