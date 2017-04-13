@@ -41,53 +41,32 @@ class Game():
         self.arrows = 10
         self.game_start = True
         self.inu = 1
+
         #Main lists
-        self.rooms = []
+        self.rooms = {}
         self.movingsprites = pygame.sprite.Group()
         self.bullet_list = pygame.sprite.Group()
-        #Torture Chamber
-        self.room = room1_library.Torture_Chamber()
-        self.rooms.append(self.room)
-        #Dragon Wait Room
-        self.room = room2_library.DWR()
-        self.rooms.append(self.room)
-        #Dragon Cave
-        self.room = room3_library.Dragon_Cave()
-        self.rooms.append(self.room)
-        #Weapons Room
-        self.room = room4_library.Weapons_Room()
-        self.rooms.append(self.room)
-        #Execution Chamber
-        self.room = room5_library.Execution_Chamber()
-        self.rooms.append(self.room)
-        #Hallway
-        self.room = room6_library.Hallway()
-        self.rooms.append(self.room)
-        #Lava Pit
-        self.room = room7_library.Lava_Pit()
-        self.rooms.append(self.room)
-        #First Cell
-        self.room = room8_library.First_Cell()
-        self.rooms.append(self.room)
-        #Exit Hallway
-        self.room = room9_library.Exit_Hallway()
-        self.rooms.append(self.room)
-        #Second Cell
-        self.room = room10_library.Second_Cell()
-        self.rooms.append(self.room)
-        #Prisoner's Lounge
-        self.room = room11_library.Prisoner_Lounge()
-        self.rooms.append(self.room)
-        #Cafeteria
-        self.room = room12_library.Cafeteria()
-        self.rooms.append(self.room)
+
+        self.rooms['torture_chamber'] = room1_library.Torture_Chamber()
+        self.rooms['DWR'] = room2_library.DWR()
+        self.rooms['dragon_cave'] = room3_library.Dragon_Cave()
+        self.rooms['weapons_room'] = room4_library.Weapons_Room()
+        self.rooms['execution_chamber'] = room5_library.Execution_Chamber()
+        self.rooms['hallway'] = room6_library.Hallway()
+        self.rooms['lava_pit'] = room7_library.Lava_Pit()
+        self.rooms['first_cell'] = room8_library.First_Cell()
+        self.rooms['exit_hallway'] = room9_library.Exit_Hallway()
+        self.rooms['second_cell'] = room10_library.Second_Cell()
+        self.rooms['prisoner_lounge'] = room11_library.Prisoner_Lounge()
+        self.rooms['cafeteria'] = room12_library.Cafeteria()
+
         #room setup
-        self.current_room_no = 5
-        self.current_room = self.rooms[self.current_room_no]
+        self.current_room_name = 'hallway'
+        self.current_room = self.rooms['hallway']
         #Player
         self.player = player_library.Player(300, 50)
         self.movingsprites.add(self.player)
-        
+
     def display_menu(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -104,7 +83,7 @@ class Game():
                     self.inu += 1
                     if self.inu == 5:
                         self.game_start = False
-    
+
 
     def process_events(self):
         for event in pygame.event.get():
@@ -145,7 +124,7 @@ class Game():
                             self.bullet.way("right")
                         self.bullet_list.add(self.bullet)
                         self.arrows -= 1
- 
+
             # Reset speed when key goes up
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -157,10 +136,12 @@ class Game():
                 elif event.key == pygame.K_DOWN:
                     self.player.changespeed(0, -5)
         return False
-    def change_rooms(self, nr):
+
+    def change_rooms(self, name):
         #Moves player to the next room
-        self.current_room_no = nr
-        self.current_room = self.rooms[nr]
+        self.current_room_name = name
+        self.current_room = self.rooms[name]
+
     def run_logic(self):
         if not self.game_over and not self.lava_over:
             if self.player.lives <= -100:
@@ -168,23 +149,23 @@ class Game():
             #Makes all the sprites move
             #moves the player
             self.player.update(self.current_room.wall_list, self.current_room.enemy_sprites)
-            
+
             #moves the knights
             self.current_room.enemy_sprites.update()
-            
+
             #Checks to see if the knight kills you
             if self.player.lives < 1:
                 self.game_over = True
-            
+
             #allows you to pick up the key
             key_hit_list = pygame.sprite.spritecollide(self.player, self.current_room.wr_key_list, True)
             dc_key_hit_list = pygame.sprite.spritecollide(self.player, self.current_room.dc_key_list, True)
             eh_key_hit_list = pygame.sprite.spritecollide(self.player, self.current_room.exit_hallway_key_list, True)
             weapon_hit_list = pygame.sprite.spritecollide(self.player, self.current_room.weapons_list, True)
-            
+
             #makes the bullets move
             self.bullet_list.update()
-            
+
             #records that you have a key
             if key_hit_list:
                 self.wr_key_yes = True
@@ -194,7 +175,7 @@ class Game():
                 self.exit_key_yes = True
             if weapon_hit_list:
                 self.weapons_yes = True
-                
+
             #Checks to see if the bullet hit anything
             for bullet in self.bullet_list:
                 bullet_hit_list = pygame.sprite.spritecollide(self.bullet, self.current_room.enemy_sprites, True)
@@ -202,112 +183,112 @@ class Game():
                     self.bullet_list.remove(self.bullet)
                 if self.bullet.rect.y < -10:
                     self.bullet_list.remove(self.bullet)
-                    
+
             #Checks to see if you went up out of the room
             if self.player.rect.y < -15:
-                if self.current_room_no == 0:
-                    self.change_rooms(1)
+                if self.current_room_name == 'torture_chamber':
+                    self.change_rooms('DWR')
                     self.player.rect.y = 600
-                elif self.current_room_no == 1:
+                elif self.current_room_name == 'DWR':
                     if self.dragon_key_yes == True:
-                        self.change_rooms(2)
+                        self.change_rooms('dragon_cave')
                         self.player.rect.y = 600
                     else:
                         self.player.rect.y += 50
-                elif self.current_room_no == 3:
+                elif self.current_room_name == 'weapons_room':
                     self.player.rect.x = 350
-                    self.change_rooms(4)
-                elif self.current_room_no == 2:
-                    self.change_rooms(7)
-                elif self.current_room_no == 7:
-                    self.change_rooms(8)
-                elif self.current_room_no == 9:
-                    self.change_rooms(10)
-                elif self.current_room == 8:
+                    self.change_rooms('execution_chamber')
+                elif self.current_room_name == 'dragon_cave':
+                    self.change_rooms('first_cell')
+                elif self.current_room_name == 'first_cell':
+                    self.change_rooms('exit_hallway')
+                elif self.current_room_name == 'second_cell':
+                    self.change_rooms('prisoner_lounge')
+                elif self.current_room == 'exit_hallway':
                     self.game_over = True
                     self.you_win = True
-                if self.current_room_no != 1:
+                if self.current_room_name != 'DWR':
                     self.player.rect.y = 600
-                
+
             #Checks to see if you went down and out of the room
             if self.player.rect.y > 601:
-                if self.current_room_no == 1:
-                    self.change_rooms(0)
-                elif self.current_room_no == 2:
-                    self.change_rooms(1)
-                elif self.current_room_no == 4:
+                if self.current_room_name == 'DWR':
+                    self.change_rooms('torture_chamber')
+                elif self.current_room_name == 'dragon_cave':
+                    self.change_rooms('DWR')
+                elif self.current_room_name == 'execution_chamber':
                     if self.wr_key_yes == True:
                         self.player.rect.x = 550
-                        self.change_rooms(3)
+                        self.change_rooms('weapons_room')
                         self.player.rect.y = 0
                     else:
                         self.player.rect.y -= 50
-                elif self.current_room_no == 8:
-                    self.change_rooms(7)
+                elif self.current_room_name == 'exit_hallway':
+                    self.change_rooms('first_cell')
                     self.player.rect.y = 0
-                elif self.current_room_no == 7:
+                elif self.current_room_name == 'first_cell':
                     if self.dragon_key_yes == True:
-                        self.change_rooms(2)
+                        self.change_rooms('dragon_cave')
                         self.player.rect.y = 0
                     else:
                         self.player.rect.y -= 50
-                elif self.current_room_no == 10:
-                    self.change_rooms(9)
-                if self.current_room_no != 4 and self.current_room_no != 7:
+                elif self.current_room_name == 'prisoner_lounge':
+                    self.change_rooms('exit_hallway')
+                if self.current_room_name != 'execution_chamber' and self.current_room_name != 'first_cell':
                     self.player.rect.y = 0
             #Checks to see if you went right and out of the room
             if self.player.rect.x > 790:
-                if self.current_room_no == 1:
-                    self.change_rooms(4)
-                elif self.current_room_no == 7:
-                    self.change_rooms(9)
-                elif self.current_room_no == 8:
-                    self.change_rooms(10)
-                elif self.current_room_no == 11:
-                    self.change_rooms(8)
+                if self.current_room_name == 'DWR':
+                    self.change_rooms('execution_chamber')
+                elif self.current_room_name == 'first_cell':
+                    self.change_rooms('second_cell')
+                elif self.current_room_name == 'exit_hallway':
+                    self.change_rooms('prisoner_lounge')
+                elif self.current_room_name == 'cafeteria':
+                    self.change_rooms('exit_hallway')
                 self.player.rect.x = 0
             #Checks to see if you went left and out of the room
             if self.player.rect.x < 0:
-                if self.current_room_no == 4:
-                    self.change_rooms(1)
+                if self.current_room_name == 'execution_chamber':
+                    self.change_rooms('DWR')
                     self.player.rect.x = 790
-                elif self.current_room_no == 9:
-                    self.change_rooms(7)
+                elif self.current_room_name == 'second_cell':
+                    self.change_rooms('first_cell')
                     self.player.rect.x = 790
-                elif self.current_room_no == 10:
-                    self.change_rooms(8)
+                elif self.current_room_name == 'prisoner_lounge':
+                    self.change_rooms('exit_hallway')
                     self.player.rect.x = 790
-                elif self.current_room_no == 8:
-                    self.change_rooms(11)
+                elif self.current_room_name == 'exit_hallway':
+                    self.change_rooms('cafeteria')
                     self.player.rect.x = 790
             #Specific to leaving hallway only
             if self.player.rect.x > 605 and self.player.rect.y > 280:
-                if self.current_room_no == 5:
+                if self.current_room_name == 'hallway':
                     self.player.rect.y = 280
-                    self.change_rooms(1)
+                    self.change_rooms('DWR')
                     self.player.rect.x = 0
             if self.player.rect.x > 605 and self.player.rect.y < 280:
-                if self.current_room_no == 5:
+                if self.current_room_name == 'hallway':
                     self.player.rect.y = 280
-                    self.change_rooms(7)
+                    self.change_rooms('first_cell')
                     self.player.rect.x = 0
             if self.player.rect.y > 500:
-                if self.current_room_no == 5:
-                    self.change_rooms(6)
+                if self.current_room_name == 'hallway':
+                    self.change_rooms('lava_pit')
                     self.player.rect.y = 0
-            if self.current_room_no == 6 and self.player.rect.y >= 50:
+            if self.current_room_name == 'lava_pit' and self.player.rect.y >= 50:
                 self.lava_over = True
             #Specific to entering hallway only
             if self.player.rect.x < 0:
-                if self.current_room_no == 1:
-                    self.change_rooms(5)
+                if self.current_room_name == 'DWR':
+                    self.change_rooms('hallway')
                     self.player.rect.x = 585
                     self.player.rect.y = 360
-                elif self.current_room_no == 7:
-                    self.change_rooms(5)
+                elif self.current_room_name == 'first_cell':
+                    self.change_rooms('hallway')
                     self.player.rect.x = 585
                     self.player.rect.y = 110
-                
+
     def display_screen(self, screen):
         if not self.game_over and not self.lava_over and not self.display_s and not self.game_start:
             #Displays backround image for each room
@@ -375,4 +356,3 @@ class Game():
 #Prisoner's lounge needs two doors
 #Exit hallway needs to be locked
 #Need other doors opened as well as locked
-        

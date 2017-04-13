@@ -19,12 +19,13 @@ def main():
     pygame.init()
     size = [SCREEN_WIDTH, SCREEN_HEIGHT]
     screen = pygame.display.set_mode(size)
-    #Add Caption    
+    #Add Caption
     pygame.display.set_caption("My Game")
     #Game Variables
     done = False
     clock = pygame.time.Clock()
     game = game_knight.Game()
+    #import pdb ; pdb.set_trace()
     #Main Program Loop
     while not done:
         dm = game.display_s
