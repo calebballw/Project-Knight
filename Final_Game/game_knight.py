@@ -297,7 +297,6 @@ class Game():
         if not self.game_over and not self.lava_over and not self.display_s and not self.game_start:
             #Displays backround image for each room
             screen.blit(self.current_room.background_image, [0, 0])
-            print ("hi")
             #Displays all the sprites and moving objects
             self.movingsprites.draw(screen)
             self.current_room.wall_list.draw(screen)
