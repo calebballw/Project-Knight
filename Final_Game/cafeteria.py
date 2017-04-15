@@ -1,6 +1,6 @@
 import pygame
 import wall1
-import room_library
+from room import Room
 import knight_library
 
 black = (0, 0, 0)
@@ -8,10 +8,10 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 
-class Cafeteria(room_library.Room):
+class Cafeteria(Room):
     def __init__(self):
         self.background_image = pygame.image.load("cafeteria.jpg").convert()
-        room_library.Room.__init__(self)
+        Room.__init__(self)
         walls = [ [0,0,20,600], #Left Wall
                   [780,0,20,235], #Right Top Wall
                   [780,365,20,235], #Right Bottom Wall

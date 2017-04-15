@@ -1,6 +1,6 @@
 import pygame
 import wall1
-import room_library
+from room import Room
 import knight_library
 
 black = (0, 0, 0)
@@ -8,12 +8,12 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 
-class Execution_Chamber(room_library.Room):
+class Execution_Chamber(Room):
     def __init__(self, door_open = False):
         self.background_image = pygame.image.load("execution chamber.jpg").convert()
-        room_library.Room.__init__(self)
+        Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
-                  [0,365,20,235], #Left Bottom 
+                  [0,365,20,235], #Left Bottom
                   [780,0,20,600], #Right Top Wall
                   [0,0,780,20], #Top Wall
                   [0,580,460,20], #Bottom Left Wall
@@ -22,9 +22,7 @@ class Execution_Chamber(room_library.Room):
         for item in walls:
             wall = wall1.Wall(item[0], item[1], item[2], item[3])
             self.wall_list.add(wall)
-            
+
 
     def door_open(self):
         self.background_image = pygame.image.load("Dragon_Cave.jpg").convert()
-        
-        

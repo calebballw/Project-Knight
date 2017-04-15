@@ -1,8 +1,7 @@
 import pygame
 import wall1
-import room_library
-import room1_library
-import room2_library
+#import room1_library
+#import room2_library
 import player_library
 import game_knight
 #Define Colors

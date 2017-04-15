@@ -1,6 +1,6 @@
 import pygame
 import wall1
-import room_library
+from room import Room
 import knight_library
 import key_library
 
@@ -9,12 +9,12 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 
-class Prisoner_Lounge(room_library.Room):
+class Prisoner_Lounge(Room):
     def __init__(self):
         self.background_image = pygame.image.load("prisoners lounge.jpg").convert()
-        room_library.Room.__init__(self)
+        Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
-                  [0,365,20,235], #Left Bottom Wall 
+                  [0,365,20,235], #Left Bottom Wall
                   [780,0,20,600], #Right Wall
                   [0,0,780,20], #Top Wall
                   [0,580,320,20], #Bottom Left Wall

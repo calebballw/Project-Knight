@@ -1,5 +1,5 @@
 import pygame
-import room_library
+from room import Room
 import wall1
 import key_library
 
@@ -8,10 +8,10 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 
-class Torture_Chamber(room_library.Room):
+class Torture_Chamber(Room):
     def __init__(self):
         self.background_image = pygame.image.load("torture_room.jpg")
-        room_library.Room.__init__(self)
+        Room.__init__(self)
         walls = [ [0,20,20,580], #Left Wall
                   [780,0,20,600], #Right Wall
                   [0,0,320,20], #Top Left Wall

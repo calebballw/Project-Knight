@@ -1,6 +1,6 @@
 import pygame
 import wall1
-import room_library
+from room import Room
 import knight_library
 
 black = (0, 0, 0)
@@ -8,12 +8,12 @@ white = (255, 255, 255)
 blue = (0, 0, 255)
 red = (255, 0, 0)
 
-class Second_Cell(room_library.Room):
+class Second_Cell(Room):
     def __init__(self):
         self.background_image = pygame.image.load("second cell.jpg").convert()
-        room_library.Room.__init__(self)
+        Room.__init__(self)
         walls = [ [0,0,20,235], #Left Top Wall
-                  [0,365,20,235], #Left Bottom 
+                  [0,365,20,235], #Left Bottom
                   [780,0,20,600], #Right Wall
                   [0,0,320,20], #Top Left Wall
                   [550,0,330,20], #Top Right Wall

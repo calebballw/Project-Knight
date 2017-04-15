@@ -1,5 +1,5 @@
 import pygame
-class Room():
+class Room(object):
     wall_list = None
     enemy_sprites = None
     wr_key_list = None
