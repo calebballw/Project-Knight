@@ -16,6 +16,8 @@ from prisoner_lounge import Prisoner_Lounge
 from cafeteria import Cafeteria
 import knight_library
 import bullet_library
+import math_stuff
+import dragon_library
 #Define some colors
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -38,14 +40,15 @@ class Game():
         self.weapons_yes = False
         self.you_win = False
         self.display_s = True
-        self.arrows = 10
+        self.arrows = 30
         self.game_start = True
-        self.inu = 1
+        self.inu = 0
 
         #Main lists
         self.rooms = {}
         self.movingsprites = pygame.sprite.Group()
         self.bullet_list = pygame.sprite.Group()
+        
 
         self.rooms['torture_chamber'] = Torture_Chamber()
         self.rooms['DWR'] = DWR()
@@ -61,11 +64,12 @@ class Game():
         self.rooms['cafeteria'] = Cafeteria()
 
         #room setup
-        self.current_room_name = 'hallway'
-        self.current_room = self.rooms['hallway']
+        self.current_room_name = 'weapons_room'
+        print ("setexithallway")
+        self.current_room = self.rooms['weapons_room']
 
         #Player
-        self.player = player_library.Player(300, 50)
+        self.player = player_library.Player(300, 300)
         self.movingsprites.add(self.player)
 
     def display_menu(self):
@@ -82,7 +86,7 @@ class Game():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_n:
                     self.inu += 1
-                    if self.inu == 5:
+                    if self.inu == 3:
                         self.game_start = False
 
 
@@ -95,33 +99,45 @@ class Game():
             elif event.type == pygame.KEYDOWN:
                 #Left Arrow Key, Move Left
                 if event.key == pygame.K_LEFT:
-                    self.player.flip("left")
-                    self.player.changespeed(-5, 0)
+                    if self.weapons_yes:
+                        self.player.flipbow("left")
+                    else:
+                        self.player.flip("left")
+                    self.player.changespeed(-10, 0)
                 #Right Arrow Key, Move Right
                 elif event.key == pygame.K_RIGHT:
-                    self.player.flip("right")
-                    self.player.changespeed(5, 0)
+                    if self.weapons_yes:
+                        self.player.flipbow("right")
+                    else:
+                        self.player.flip("right")
+                    self.player.changespeed(10, 0)
                 #Up Arrow Key, Move Up
                 elif event.key == pygame.K_UP:
-                    self.player.flip("up")
-                    self.player.changespeed(0, -5)
+                    if self.weapons_yes:
+                        self.player.flipbow("up")
+                    else:
+                        self.player.flip("up")
+                    self.player.changespeed(0, -10)
                 #Down Arrow Key, Move Down
                 elif event.key == pygame.K_DOWN:
-                    self.player.flip("down")
-                    self.player.changespeed(0, 5)
+                    if self.weapons_yes:
+                        self.player.flipbow("down")
+                    else:
+                        self.player.flip("down")
+                    self.player.changespeed(0, 10)
                 #Spacebar, Shoot Something
                 elif event.key == pygame.K_SPACE:
                     if self.weapons_yes == True and self.arrows > 0:
                         self.bullet = bullet_library.Bullet()
                         self.bullet.rect.x = self.player.rect.x + 30
                         self.bullet.rect.y = self.player.rect.y
-                        if self.player.image == self.player.princeb:
+                        if self.player.image == self.player.bprinceb:
                             self.bullet.way("up")
-                        elif self.player.image == self.player.princef:
+                        elif self.player.image == self.player.bprincef:
                             self.bullet.way("down")
-                        elif self.player.image == self.player.princel:
+                        elif self.player.image == self.player.bprincel:
                             self.bullet.way("left")
-                        elif self.player.image == self.player.princer:
+                        elif self.player.image == self.player.bprincer:
                             self.bullet.way("right")
                         self.bullet_list.add(self.bullet)
                         self.arrows -= 1
@@ -129,30 +145,33 @@ class Game():
             # Reset speed when key goes up
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
-                    self.player.changespeed(5, 0)
+                    self.player.changespeed(10, 0)
                 elif event.key == pygame.K_RIGHT:
-                    self.player.changespeed(-5, 0)
+                    self.player.changespeed(-10, 0)
                 elif event.key == pygame.K_UP:
-                    self.player.changespeed(0, 5)
+                    self.player.changespeed(0, 10)
                 elif event.key == pygame.K_DOWN:
-                    self.player.changespeed(0, -5)
+                    self.player.changespeed(0, -10)
         return False
 
     def change_rooms(self, name):
         #Moves player to the next room
         self.current_room_name = name
         self.current_room = self.rooms[name]
+        self.current_room.reset_knights()
+
 
     def run_logic(self):
         if not self.game_over and not self.lava_over:
-            if self.player.lives <= -100:
-                self.game_over = True
             #Makes all the sprites move
             #moves the player
-            self.player.update(self.current_room.wall_list, self.current_room.enemy_sprites)
+            self.player.update(self.current_room.wall_list, self.current_room.enemy_sprites, self.current_room.boss)
 
             #moves the knights
-            self.current_room.enemy_sprites.update()
+            self.current_room.enemy_sprites.update(self.player.position()[0], self.player.position()[1])
+            
+            #moves the boss
+            self.current_room.boss.update()
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
@@ -170,13 +189,14 @@ class Game():
             #records that you have a key
             if key_hit_list:
                 self.wr_key_yes = True
-                self.rooms['execution_chamber'].door_open()
+                #self.rooms['execution_chamber'].door_open()
             if dc_key_hit_list:
                 self.dragon_key_yes = True
             if eh_key_hit_list:
                 self.exit_key_yes = True
             if weapon_hit_list:
                 self.weapons_yes = True
+                print ("hi")
 
             #Checks to see if the bullet hit anything
             for bullet in self.bullet_list:
@@ -185,34 +205,47 @@ class Game():
                     self.bullet_list.remove(self.bullet)
                 if self.bullet.rect.y < -10:
                     self.bullet_list.remove(self.bullet)
-
+                    
+#knights distance from the player                    
+#dok = ((math_stuff.distance_form(self.rooms['DWR'].enemy.position())) - (math_stuff.distance_form(self.player.position())))    
+            
             #Checks to see if you went up out of the room
             if self.player.rect.y < -15:
                 if self.current_room_name == 'torture_chamber':
                     self.change_rooms('DWR')
                     self.player.rect.y = 550
                     self.player.rect.x = 440
+                    self.rooms['DWR'].reset_knights()
                 elif self.current_room_name == 'DWR':
                     if self.dragon_key_yes == True:
                         self.change_rooms('dragon_cave')
                         self.player.rect.y = 550
+                        self.player.rect.x = 375
                     else:
                         self.player.rect.y += 50
                 elif self.current_room_name == 'weapons_room':
                     self.player.rect.x = 350
                     self.change_rooms('execution_chamber')
                 elif self.current_room_name == 'dragon_cave':
-                    self.change_rooms('first_cell')
-                    self.player.rect.x = 385
+                    if self.exit_key_yes == True:
+                        self.change_rooms('first_cell')
+                        self.player.rect.x = 385
+                    else:
+                        self.player.rect.y += 50
                 elif self.current_room_name == 'first_cell':
                     self.change_rooms('exit_hallway')
                     self.player.rect.x = 350
+                    self.player.rect.y = 550
                 elif self.current_room_name == 'second_cell':
                     self.change_rooms('prisoner_lounge')
-                elif self.current_room == 'exit_hallway':
-                    self.game_over = True
-                    self.you_win = True
-                if self.current_room_name != 'DWR':
+                elif self.current_room_name == 'exit_hallway':
+                    if self.exit_key_yes == True:
+                        self.game_over = True
+                        self.you_win = True
+                    else:
+                        print ("elsehere")
+                        self.player.rect.y += 50
+                if self.current_room_name != 'DWR' and self.current_room_name != 'exit_hallway':
                     self.player.rect.y = 550
 
             #Checks to see if you went down and out of the room
@@ -221,7 +254,11 @@ class Game():
                     self.change_rooms('torture_chamber')
                     self.player.rect.x = 350
                 elif self.current_room_name == 'dragon_cave':
-                    self.change_rooms('DWR')
+                    if self.exit_key_yes == False:
+                        self.player.rect.y -= 50
+                    else:
+                        self.change_rooms('DWR')
+                        self.rooms['DWR'].reset_knights()
                 elif self.current_room_name == 'execution_chamber':
                     if self.wr_key_yes == True:
                         self.player.rect.x = 550
@@ -261,6 +298,7 @@ class Game():
                 if self.current_room_name == 'execution_chamber':
                     self.change_rooms('DWR')
                     self.player.rect.x = 790
+                    self.rooms['DWR'].reset_knights()
                 elif self.current_room_name == 'second_cell':
                     self.change_rooms('first_cell')
                     self.player.rect.x = 790
@@ -270,11 +308,13 @@ class Game():
                 elif self.current_room_name == 'exit_hallway':
                     self.change_rooms('cafeteria')
                     self.player.rect.x = 790
+                    self.rooms['cafeteria'].reset_knights()
             #Specific to leaving hallway only
             if self.player.rect.x > 605 and self.player.rect.y > 280:
                 if self.current_room_name == 'hallway':
                     self.player.rect.y = 280
                     self.change_rooms('DWR')
+                    self.rooms['DWR'].reset_knights()
                     self.player.rect.x = 0
             if self.player.rect.x > 605 and self.player.rect.y < 280:
                 if self.current_room_name == 'hallway':
@@ -293,6 +333,7 @@ class Game():
                     self.change_rooms('hallway')
                     self.player.rect.x = 585
                     self.player.rect.y = 360
+                    self.rooms['DWR'].enemy.reset()
                 elif self.current_room_name == 'first_cell':
                     self.change_rooms('hallway')
                     self.player.rect.x = 585
@@ -311,6 +352,7 @@ class Game():
             self.current_room.exit_hallway_key_list.draw(screen)
             self.current_room.weapons_list.draw(screen)
             self.bullet_list.draw(screen)
+            self.current_room.boss.draw(screen)
             #Displays how many lives you have
             font = pygame.font.SysFont('Calibri', 25, True, False)
             text = font.render("Lives:" + str(self.player.lives), True, red)
@@ -319,6 +361,15 @@ class Game():
             if self.weapons_yes == True:
                 screen.blit(text2, [500, 350])
             #flips all this to the screen
+            pygame.display.flip()
+        elif self.game_over == True and self.you_win == True:
+            font = pygame.font.SysFont('Calibri', 75, True, False)
+            #screen.fill(white)
+            text = font.render("You Win!", True, black)
+            text_rect = text.get_rect()
+            text_x = screen.get_width() / 2 - text_rect.width / 2
+            text_y = screen.get_height() / 2 - text_rect.height / 2
+            screen.blit(text, [text_x, text_y])
             pygame.display.flip()
         elif self.game_over == True:
             font = pygame.font.SysFont('Calibri', 75, True, False)
@@ -345,8 +396,14 @@ class Game():
                 text_x = screen.get_width() / 2 - text_rect.width / 2
                 text_y = screen.get_height() / 2 - text_rect.height / 2
                 screen.blit(text, [text_x, text_y])
-            elif self.inu == 2:
+            elif self.inu == 1:
                 text = font.render("Stop! You can't do this!!!", True, black)
+                text_rect = text.get_rect()
+                text_x = screen.get_width() / 2 - text_rect.width / 2
+                text_y = screen.get_height() / 2 - text_rect.height / 2
+                screen.blit(text, [text_x, text_y])
+            elif self.inu == 2:
+                text = font.render("Please! Stop!", True, black)
                 text_rect = text.get_rect()
                 text_x = screen.get_width() / 2 - text_rect.width / 2
                 text_y = screen.get_height() / 2 - text_rect.height / 2

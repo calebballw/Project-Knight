@@ -3,6 +3,7 @@ import wall1
 from room import Room
 import knight_library
 import key_library
+import dragon_library
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -25,3 +26,9 @@ class Dragon_Cave(Room):
             self.wall_list.add(wall)
         self.key = key_library.Key(400, 300)
         self.exit_hallway_key_list.add(self.key)
+        
+        self.dragon = dragon_library.Dragon(250, 175)
+        self.boss.add(self.dragon)
+        
+    def reset_knights(self):
+        b = "no"

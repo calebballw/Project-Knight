@@ -24,5 +24,14 @@ class Execution_Chamber(Room):
             self.wall_list.add(wall)
 
 
-    def door_open(self):
-        self.background_image = pygame.image.load("Dragon_Cave.jpg").convert()
+    #def door_open(self):
+        #self.background_image = pygame.image.load("Dragon_Cave.jpg").convert()
+        self.enemy = knight_library.Knight(200, 100)
+        self.enemy_sprites.add(self.enemy)
+        self.enemy2 = knight_library.Knight(700, 100)
+        self.enemy_sprites.add(self.enemy2)
+            
+    def reset_knights(self):
+        self.enemy.reset()
+        self.enemy2.reset()
+

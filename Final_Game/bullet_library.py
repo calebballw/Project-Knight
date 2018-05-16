@@ -20,16 +20,16 @@ class Bullet(pygame.sprite.Sprite):
     def way(self, direction):
         if direction == "up":
             self.print_image(self.iv)
-            self.change_y = -10
+            self.change_y = -20
         if direction == "down":
             self.print_image(self.iv)
-            self.change_y = 10
+            self.change_y = 20
         if direction == "left":
             self.print_image(self.ih)
-            self.change_x = -10
+            self.change_x = -20
         if direction == "right":
             self.print_image(self.ih)
-            self.change_x = 10
+            self.change_x = 20
     def update(self):
         if self.image == self.iv:
             self.rect.y += self.change_y

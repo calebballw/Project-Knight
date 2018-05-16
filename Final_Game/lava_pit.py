@@ -23,3 +23,5 @@ class Lava_Pit(Room):
         for item in walls:
             wall = wall1.Wall(item[0], item[1], item[2], item[3])
             self.wall_list.add(wall)
+    def reset_knights(self):
+        a = "hi"

@@ -2,6 +2,7 @@ import pygame
 from room import Room
 import wall1
 import key_library
+import knight_library
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -23,3 +24,13 @@ class Torture_Chamber(Room):
             self.wall_list.add(wall)
         self.key = key_library.Key(400, 300)
         self.wr_key_list.add(self.key)
+        
+        self.enemy = knight_library.Knight(200, 100)
+        self.enemy_sprites.add(self.enemy)
+        self.enemy2 = knight_library.Knight(700, 100)
+        self.enemy_sprites.add(self.enemy2)
+        
+    def reset_knights(self):
+        self.enemy.reset()
+        self.enemy2.reset()
+

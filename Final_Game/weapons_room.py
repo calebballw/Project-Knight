@@ -24,3 +24,13 @@ class Weapons_Room(Room):
             self.wall_list.add(wall)
             self.weapon = weapon_library.Bow(250, 250)
             self.weapons_list.add(self.weapon)
+            
+        self.enemy = knight_library.Knight(200, 100)
+        self.enemy_sprites.add(self.enemy)
+        self.enemy2 = knight_library.Knight(700, 100)
+        self.enemy_sprites.add(self.enemy2)
+        
+    def reset_knights(self):
+        self.enemy.reset()
+        self.enemy2.reset()
+

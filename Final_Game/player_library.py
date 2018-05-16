@@ -12,12 +12,16 @@ class Player(pygame.sprite.Sprite):
     
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.lives = 3
+        self.lives = 7
         self.princef = pygame.image.load("prince.png").convert()
         self.princeb = pygame.image.load("princeb.png").convert()
         self.princel = pygame.image.load("prince_left.png").convert()
         self.princer = pygame.image.load("prince_right.png").convert()
         self.princed = pygame.image.load("prince_dead.png").convert()
+        self.bprincef = pygame.image.load("bow_man_front.png").convert()
+        self.bprinceb = pygame.image.load("bow_man_back.png").convert()
+        self.bprincer = pygame.image.load("bow_man_right.png").convert()
+        self.bprincel = pygame.image.load("bow_man_left.png").convert()
         
         self.image = self.princef
         self.image.set_colorkey(white)
@@ -25,9 +29,14 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
-    def print_character(self, character):
+    def print_character(self, character, color=None):
+        if color is None:
+            color = white
+        else:
+            color = color
         self.image = character
-        self.image.set_colorkey(white)
+        self.image.set_colorkey(color)
+    
     def flip(self, direction):
         if direction == "up":
             self.print_character(self.princeb)
@@ -37,11 +46,19 @@ class Player(pygame.sprite.Sprite):
             self.print_character(self.princel)
         if direction == "right":
             self.print_character(self.princer)
-        
+    def flipbow(self, direction):
+        if direction == "up":
+            self.print_character(self.bprinceb, black)
+        if direction == "down":
+            self.print_character(self.bprincef, black)
+        if direction == "left":
+            self.print_character(self.bprincel, black)
+        if direction == "right":
+            self.print_character(self.bprincer, black)
     def changespeed(self, x, y):
         self.change_x += x
         self.change_y += y
-    def update(self, walls, badguys):
+    def update(self, walls, badguys, dragon):
         self.rect.x += self.change_x
         
         block_hit_list = pygame.sprite.spritecollide(self, walls, False)
@@ -75,5 +92,24 @@ class Player(pygame.sprite.Sprite):
             if self.change_y < 0:
                 self.rect.y += 100
                 self.lives -= 1
+        
+        block_hit_list = pygame.sprite.spritecollide(self, dragon, False)
+        for block in block_hit_list:
+            if self.change_y > 0:
+                self.rect.y += -100
+                self.lives -= 1
+            if self.change_y <0:
+                self.rect.y += 100
+                self.lives -= 1
+            if self.change_x > 0:
+                self.rect.x += -100
+                self.lives -= 1
+            if self.change_x < 0:
+                self.rect.x += 100
+                self.lives -= 1
+        
+                
+    def position(self):
+        return [self.rect.x, self.rect.y]
                 
                 
