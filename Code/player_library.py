@@ -95,19 +95,20 @@ class Player(pygame.sprite.Sprite):
         
         block_hit_list = pygame.sprite.spritecollide(self, dragon, False)
         for block in block_hit_list:
-            if self.change_y > 0:
+            self.lives -= 50
+            """if self.change_y > 0:
                 self.rect.y += -100
-                self.lives -= 1
+                self.lives -= 50
             if self.change_y <0:
                 self.rect.y += 100
-                self.lives -= 1
+                self.lives -= 50
             if self.change_x > 0:
                 self.rect.x += -100
-                self.lives -= 1
+                self.lives -= 50
             if self.change_x < 0:
                 self.rect.x += 100
-                self.lives -= 1
-        
+                self.lives -= 50
+        """
                 
     def position(self):
         return [self.rect.x, self.rect.y]

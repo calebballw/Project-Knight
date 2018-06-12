@@ -171,7 +171,7 @@ class Game():
             self.current_room.enemy_sprites.update(self.player.position()[0], self.player.position()[1])
             
             #moves the boss
-            self.current_room.boss.update()
+            self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
