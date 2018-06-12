@@ -6,7 +6,7 @@ class Dragon(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.dragon = pygame.image.load("Images/dragon.png").convert()
-        self.dragonr = pygame.image.load("Images/dragonl.png").convert()
+        self.dragonl = pygame.image.load("Images/dragonl.png").convert()
         
         self.image = self.dragon
         self.image.set_colorkey(black)
@@ -44,4 +44,10 @@ class Dragon(pygame.sprite.Sprite):
             self.changex = 0
         else:
             self.changex = ((x - self.rect.x)/abs(x - self.rect.x))*3
+            if self.changex < 0:
+                self.image = self.dragonl
+                self.image.set_colorkey(black)
+            else:
+                self.image = self.dragon
+                self.image.set_colorkey(black)
         
