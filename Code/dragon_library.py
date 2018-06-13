@@ -1,4 +1,5 @@
 import pygame
+import bullet_library
 
 white = (255, 255, 255)
 black = (0, 0, 0)
@@ -22,20 +23,6 @@ class Dragon(pygame.sprite.Sprite):
         self.rect.x += self.changex
         self.rect.y += self.changey
         
-        """
-        if self.rect.x >= 400:
-            self.changex = 0
-            self.changey = 3
-        if self.rect.y >= 300:
-            self.changey = 0
-            self.changex = -3
-        if self.rect.x <= 100:
-            self.changex = 0
-            self.changey = -3
-        if self.rect.y <= 75 and self.rect.x <= 400:
-            self.changey = 0
-            self.changex = 3
-        """
         if y - self.rect.y == 0:
             self.changey = 0
         else:
@@ -49,5 +36,12 @@ class Dragon(pygame.sprite.Sprite):
                 self.image.set_colorkey(black)
             else:
                 self.image = self.dragon
-                self.image.set_colorkey(black)
-        
+                self.image.set_colorkey(black)       
+        self.bullet = bullet_library.Bullet()
+        self.bullet.rect.x = self.rect.x + 30
+        self.bullet.rect.y = self.rect.y
+        if self.image == self.dragon:
+            self.bullet.way("right")
+        else:
+            self.bullet.way("left")
+        self.fire.add(self.bullet)

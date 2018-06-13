@@ -64,9 +64,9 @@ class Game():
         self.rooms['cafeteria'] = Cafeteria()
 
         #room setup
-        self.current_room_name = 'weapons_room'
+        self.current_room_name = 'second_cell'
         print ("setexithallway")
-        self.current_room = self.rooms['weapons_room']
+        self.current_room = self.rooms[self.current_room_name]
 
         #Player
         self.player = player_library.Player(300, 300)
@@ -171,7 +171,10 @@ class Game():
             self.current_room.enemy_sprites.update(self.player.position()[0], self.player.position()[1])
             
             #moves the boss
-            self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
+            #self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
+            if self.current_room_name == 'dragon_cave':
+                self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
+                self.current_room.dragon.fire.update()
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
