@@ -7,7 +7,6 @@ black = (0, 0, 0)
 class Dragon(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        Room.__init__(self)
         self.dragon = pygame.image.load("Images/dragon.png").convert()
         self.dragonl = pygame.image.load("Images/dragonl.png").convert()
         

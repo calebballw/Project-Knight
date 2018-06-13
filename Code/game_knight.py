@@ -195,7 +195,6 @@ class Game():
                         self.fire.way("left")
                     self.fire_list.add(self.fire)
                 self.count += 1
-                self.current_room.dragon.fire.update()
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
