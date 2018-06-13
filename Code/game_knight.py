@@ -27,6 +27,7 @@ red = (255, 0, 0)
 class Game():
     def __init__(self):
         #Game Functionality
+        self.count = 0
         self.menu_image = pygame.image.load("Images/intro.png")
         self.background_image = pygame.image.load("Images/lava_pit.png").convert()
         self.torture = pygame.image.load("Images/torture_room.jpg").convert()
@@ -37,7 +38,7 @@ class Game():
         self.dragon_key_yes = False
         self.wr_key_yes = False
         self.exit_key_yes = False
-        self.weapons_yes = False
+        self.weapons_yes = True
         self.you_win = False
         self.display_s = True
         self.arrows = 30
@@ -48,6 +49,7 @@ class Game():
         self.rooms = {}
         self.movingsprites = pygame.sprite.Group()
         self.bullet_list = pygame.sprite.Group()
+        self.fire_list = pygame.sprite.Group()
         
 
         self.rooms['torture_chamber'] = Torture_Chamber()
@@ -64,7 +66,7 @@ class Game():
         self.rooms['cafeteria'] = Cafeteria()
 
         #room setup
-        self.current_room_name = 'second_cell'
+        self.current_room_name = 'dragon_cave'
         print ("setexithallway")
         self.current_room = self.rooms[self.current_room_name]
 
@@ -140,6 +142,15 @@ class Game():
                         elif self.player.image == self.player.bprincer:
                             self.bullet.way("right")
                         self.bullet_list.add(self.bullet)
+                        
+                        #self.fire = bullet_library.Bullet()
+                        #self.fire.rect.x = self.current_room.dragon.rect.x + 30
+                        #self.fire.rect.y = self.current_room.dragon.rect.y
+                        #if self.current_room.dragon.image == self.current_room.dragon.dragon:
+                        #    self.fire.way("right")
+                        #else:
+                        #    self.fire.way("left")
+                        #self.fire_list.add(self.fire)
                         self.arrows -= 1
 
             # Reset speed when key goes up
@@ -174,6 +185,16 @@ class Game():
             #self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
             if self.current_room_name == 'dragon_cave':
                 self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
+                if self.count % 10 == 0:
+                    self.fire = bullet_library.Bullet()
+                    self.fire.rect.x = self.current_room.dragon.rect.x + 30
+                    self.fire.rect.y = self.current_room.dragon.rect.y
+                    if self.current_room.dragon.image == self.current_room.dragon.dragon:
+                       self.fire.way("right")
+                    else:
+                        self.fire.way("left")
+                    self.fire_list.add(self.fire)
+                self.count += 1
                 self.current_room.dragon.fire.update()
 
             #Checks to see if the knight kills you
@@ -188,7 +209,7 @@ class Game():
 
             #makes the bullets move
             self.bullet_list.update()
-
+            self.fire_list.update()
             #records that you have a key
             if key_hit_list:
                 self.wr_key_yes = True
@@ -355,6 +376,7 @@ class Game():
             self.current_room.exit_hallway_key_list.draw(screen)
             self.current_room.weapons_list.draw(screen)
             self.bullet_list.draw(screen)
+            self.fire_list.draw(screen)
             self.current_room.boss.draw(screen)
             #Displays how many lives you have
             font = pygame.font.SysFont('Calibri', 25, True, False)
