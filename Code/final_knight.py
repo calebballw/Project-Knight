@@ -35,7 +35,10 @@ def main():
         if dm == False and dn == True:
             done = game.game_star()
             game.display_screen(screen)
-        if dm == False and dn == False:
+        if game.boss_battle:
+            done = game.boss_battle_screen()
+            game.display_screen(screen)
+        if dm == False and dn == False and not game.boss_battle:
             done = game.process_events()
             game.run_logic()
             game.display_screen(screen)

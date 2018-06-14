@@ -27,6 +27,9 @@ red = (255, 0, 0)
 class Game():
     def __init__(self):
         #Game Functionality
+        self.kleft = False
+        self.kright = False
+        self.boss_battle = False
         self.menu_image = pygame.image.load("Images/intro.png")
         self.background_image = pygame.image.load("Images/lava_pit.png").convert()
         self.torture = pygame.image.load("Images/torture_room.jpg").convert()
@@ -92,6 +95,22 @@ class Game():
                     if self.flags['caleb_says_stands_for_something'] == 3:
                         self.flags['game_start'] = False
 
+    def boss_battle_screen(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return True
+            elif event.type == pygame.KEYDOWN:
+                keys = pygame.key.get_pressed()
+                if keys[pygame.K_DOWN]:
+                    print("YES!")
+                if event.key == pygame.K_n:
+                    self.boss_battle = False
+                    self.player.changespeed(0, -10)
+                    if self.kleft == True:
+                        self.player.changespeed(10, 0)
+                    if self.kright == True:
+                        self.player.changespeed(-10, 0)
+
 
     def process_events(self):
         for event in pygame.event.get():
@@ -102,6 +121,7 @@ class Game():
             elif event.type == pygame.KEYDOWN:
                 #Left Arrow Key, Move Left
                 if event.key == pygame.K_LEFT:
+                    self.kleft = True
                     if self.flags['weapons_enabled']:
                         self.player.flipbow("left")
                     else:
@@ -109,6 +129,7 @@ class Game():
                     self.player.changespeed(-10, 0)
                 #Right Arrow Key, Move Right
                 elif event.key == pygame.K_RIGHT:
+                    self.kright = True
                     if self.flags['weapons_enabled']:
                         self.player.flipbow("right")
                     else:
@@ -158,8 +179,10 @@ class Game():
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     self.player.changespeed(10, 0)
+                    self.kleft = False
                 elif event.key == pygame.K_RIGHT:
                     self.player.changespeed(-10, 0)
+                    self.kright = False
                 elif event.key == pygame.K_UP:
                     self.player.changespeed(0, 10)
                 elif event.key == pygame.K_DOWN:
@@ -296,6 +319,7 @@ class Game():
                     self.player.rect.x = 400
                 elif self.current_room_name == 'first_cell':
                     if self.flags['dragon_key'] == True:
+                        self.boss_battle = True
                         self.change_rooms('dragon_cave')
                         self.player.rect.y = 0
                         self.player.rect.x = 350
@@ -385,6 +409,14 @@ class Game():
             text2 = font.render("Arrows:" + str(self.flags['arrow_count']), True, blue)
             if self.flags['weapons_enabled'] == True:
                 screen.blit(text2, [500, 350])
+            if self.boss_battle == True:
+                font = pygame.font.SysFont('Calibri', 75, True, False)
+                #screen.fill(white)
+                text = font.render("You will never get the key!", True, black)
+                text_rect = text.get_rect()
+                text_x = screen.get_width() / 2 - text_rect.width / 2
+                text_y = screen.get_height() / 2 - text_rect.height / 2
+                screen.blit(text, [text_x, text_y])
             #flips all this to the screen
             pygame.display.flip()
         elif self.flags['game_over'] == True and self.flags['you_win'] == True:

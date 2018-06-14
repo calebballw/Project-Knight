@@ -27,7 +27,7 @@ class Dragon_Cave(Room):
         self.key = key_library.Key(400, 300)
         self.exit_hallway_key_list.add(self.key)
         
-        self.dragon = dragon_library.Dragon(250, 175)
+        self.dragon = dragon_library.Dragon(250, 400)
         self.boss.add(self.dragon)
         
     def reset_knights(self):
