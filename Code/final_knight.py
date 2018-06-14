@@ -27,8 +27,8 @@ def main():
     #import pdb ; pdb.set_trace()
     #Main Program Loop
     while not done:
-        dm = game.display_s
-        dn = game.game_start
+        dm = game.flags['display_screen']
+        dn = game.flags['game_start']
         if dm == True:
             done = game.display_menu()
             game.display_screen(screen)
