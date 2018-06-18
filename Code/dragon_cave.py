@@ -4,6 +4,7 @@ from room import Room
 import knight_library
 import key_library
 import dragon_library
+import button_library
 
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -24,11 +25,19 @@ class Dragon_Cave(Room):
         for item in walls:
             wall = wall1.Wall(item[0], item[1], item[2], item[3])
             self.wall_list.add(wall)
+
         self.key = key_library.Key(400, 300)
         self.exit_hallway_key_list.add(self.key)
         
-        self.dragon = dragon_library.Dragon(250, 400)
+        self.dragon = dragon_library.Dragon(400, 250)
         self.boss.add(self.dragon)
+        
+        self.button1 = button_library.Button(10, 100)
+        self.buttons.add(self.button1)
+        self.button2 = button_library.Button(10, 300)
+        self.buttons.add(self.button2)
+        self.button3 = button_library.Button(10, 500)
+        self.buttons.add(self.button3)
         
     def reset_knights(self):
         b = "no"

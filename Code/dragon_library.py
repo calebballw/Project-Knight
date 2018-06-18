@@ -13,16 +13,21 @@ class Dragon(pygame.sprite.Sprite):
         self.image = self.dragon
         self.image.set_colorkey(black)
         
+        self.originx = x
+        self.originy = y
+        
         self.rect = self.image.get_rect()
         self.rect.y = y
         self.rect.x = x
         
         self.changex = 3
         self.changey = 0
+        
+        self.stun_check = 1
     
     def update(self, x, y):
-        self.rect.x += self.changex
-        self.rect.y += self.changey
+        self.rect.x += self.changex * self.stun_check
+        self.rect.y += self.changey * self.stun_check
         
         if y - self.rect.y == 0:
             self.changey = 0
@@ -38,11 +43,15 @@ class Dragon(pygame.sprite.Sprite):
             else:
                 self.image = self.dragon
                 self.image.set_colorkey(black)       
-        #self.bullet = bullet_library.Bullet()
-        #self.bullet.rect.x = self.rect.x + 30
-        #self.bullet.rect.y = self.rect.y
-        #if self.image == self.dragon:
-        #    self.bullet.way("right")
-        #else:
-        #    self.bullet.way("left")
-        #self.fire.add(self.bullet)
+    def reset(self):
+        self.rect.x = self.originx
+        self.rect.y = self.originy
+    
+    def stunned(self):
+        self.rect.x = self.originx
+        self.rect.y = self.originy
+        self.stun_check = 0
+    
+    def unstunned(self):
+        self.stun_check = 1
+    

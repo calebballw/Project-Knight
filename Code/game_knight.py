@@ -27,6 +27,8 @@ red = (255, 0, 0)
 class Game():
     def __init__(self):
         #Game Functionality
+        self.kup = False
+        self.kdown = False
         self.kleft = False
         self.kright = False
         self.boss_battle = False
@@ -49,6 +51,7 @@ class Game():
         self.flags['game_start'] = True
         self.flags['inu'] = 0
         self.flags['dragon_fire_delay_counter'] = 0
+        self.flags['stun_delay_counter'] = 0
         self.flags['caleb_says_stands_for_something'] = 0
 
         #Main lists
@@ -105,11 +108,15 @@ class Game():
                     print("YES!")
                 if event.key == pygame.K_n:
                     self.boss_battle = False
-                    self.player.changespeed(0, -10)
+                    if self.kdown == True:
+                        self.player.changespeed(0, -10)
                     if self.kleft == True:
                         self.player.changespeed(10, 0)
                     if self.kright == True:
                         self.player.changespeed(-10, 0)
+                    if self.kup == True:
+                        self.player.changespeed(0, 10)
+
 
 
     def process_events(self):
@@ -137,6 +144,7 @@ class Game():
                     self.player.changespeed(10, 0)
                 #Up Arrow Key, Move Up
                 elif event.key == pygame.K_UP:
+                    self.kup = True
                     if self.flags['weapons_enabled']:
                         self.player.flipbow("up")
                     else:
@@ -144,6 +152,7 @@ class Game():
                     self.player.changespeed(0, -10)
                 #Down Arrow Key, Move Down
                 elif event.key == pygame.K_DOWN:
+                    self.kdown = True
                     if self.flags['weapons_enabled']:
                         self.player.flipbow("down")
                     else:
@@ -185,8 +194,10 @@ class Game():
                     self.kright = False
                 elif event.key == pygame.K_UP:
                     self.player.changespeed(0, 10)
+                    self.kup = False
                 elif event.key == pygame.K_DOWN:
                     self.player.changespeed(0, -10)
+                    self.kdown = False
         return False
 
     def change_rooms(self, name):
@@ -209,7 +220,7 @@ class Game():
             #self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
             if self.current_room_name == 'dragon_cave':
                 self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
-                if self.flags['dragon_fire_delay_counter'] % 10 == 0:
+                if self.flags['dragon_fire_delay_counter'] % 40 == 0:
                     self.fire = bullet_library.Bullet()
                     self.fire.rect.x = self.current_room.dragon.rect.x + 30
                     self.fire.rect.y = self.current_room.dragon.rect.y
@@ -252,6 +263,33 @@ class Game():
                     self.bullet_list.remove(self.bullet)
                 if self.bullet.rect.y < -10:
                     self.bullet_list.remove(self.bullet)
+                    
+            for fire in self.fire_list:
+                fire_hit_list = pygame.sprite.spritecollide(self.player, self.fire_list, False)
+                for block in fire_hit_list:
+                    self.player.lives -= 0
+                button1_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button1, self.fire_list, False)
+                for block in button1_hit_list:
+                    self.rooms['dragon_cave'].button1.change_color()
+                    self.current_room.dragon.stunned()
+                    
+                button2_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button2, self.fire_list, False)
+                for block in button2_hit_list:
+                    self.rooms['dragon_cave'].button2.change_color()
+                    self.current_room.dragon.stunned()
+                    
+                button3_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button3, self.fire_list, False)
+                for block in button3_hit_list:
+                    self.rooms['dragon_cave'].button3.change_color()
+                    self.current_room.dragon.stunned()
+                
+                if self.current_room.dragon.stun_check == 0:    
+                    if self.flags['stun_delay_counter'] % 400 == 0:
+                        self.current_room.dragon.unstunned()
+                        self.flags['stun_delay_counter'] = 0
+                    self.flags['stun_delay_counter'] += 1
+                    
+                
 
 #knights distance from the player
 #dok = ((math_stuff.distance_form(self.rooms['DWR'].enemy.position())) - (math_stuff.distance_form(self.player.position())))
@@ -262,9 +300,10 @@ class Game():
                     self.change_rooms('DWR')
                     self.player.rect.y = 550
                     self.player.rect.x = 440
-                    self.rooms['DWR'].reset_knights()
+                    #self.rooms['DWR'].reset_knights()
                 elif self.current_room_name == 'DWR':
                     if self.flags['dragon_key'] == True:
+                        self.boss_battle = True
                         self.change_rooms('dragon_cave')
                         self.player.rect.y = 550
                         self.player.rect.x = 375
@@ -402,6 +441,7 @@ class Game():
             self.bullet_list.draw(screen)
             self.fire_list.draw(screen)
             self.current_room.boss.draw(screen)
+            self.current_room.buttons.draw(screen)
             #Displays how many lives you have
             font = pygame.font.SysFont('Calibri', 25, True, False)
             text = font.render("Lives:" + str(self.player.lives), True, red)

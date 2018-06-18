@@ -11,5 +11,6 @@ class Room(object):
         self.dc_key_list = pygame.sprite.Group()
         self.exit_hallway_key_list = pygame.sprite.Group()
         self.weapons_list = pygame.sprite.Group()
+        self.buttons = pygame.sprite.Group()
         self.boss = pygame.sprite.Group()
         self.fire = pygame.sprite.Group()
