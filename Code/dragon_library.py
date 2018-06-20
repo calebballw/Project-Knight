@@ -24,8 +24,9 @@ class Dragon(pygame.sprite.Sprite):
         self.changey = 0
         
         self.stun_check = 1
+        self.lives = 3
     
-    def update(self, x, y):
+    def update(self, x, y, bullets):
         self.rect.x += self.changex * self.stun_check
         self.rect.y += self.changey * self.stun_check
         
@@ -42,7 +43,14 @@ class Dragon(pygame.sprite.Sprite):
                 self.image.set_colorkey(black)
             else:
                 self.image = self.dragon
-                self.image.set_colorkey(black)       
+                self.image.set_colorkey(black)
+        
+        dragon_hit_list = pygame.sprite.spritecollide(self, bullets, True)
+        for dragon in dragon_hit_list:
+            if self.stun_check == 0:
+                self.lives -= 1
+                self.rect.x += 50
+                self.stun_check = 1
     def reset(self):
         self.rect.x = self.originx
         self.rect.y = self.originy

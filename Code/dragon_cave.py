@@ -27,7 +27,7 @@ class Dragon_Cave(Room):
             self.wall_list.add(wall)
 
         self.key = key_library.Key(400, 300)
-        self.exit_hallway_key_list.add(self.key)
+        #self.exit_hallway_key_list.add(self.key)
         
         self.dragon = dragon_library.Dragon(400, 250)
         self.boss.add(self.dragon)

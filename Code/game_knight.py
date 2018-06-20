@@ -32,11 +32,14 @@ class Game():
         self.kleft = False
         self.kright = False
         self.boss_battle = False
+        self.dragon_alive = True
         self.menu_image = pygame.image.load("Images/intro.png")
         self.background_image = pygame.image.load("Images/lava_pit.png").convert()
         self.torture = pygame.image.load("Images/torture_room.jpg").convert()
         self.prince = pygame.image.load("Images/prince_right.png").convert()
         self.bad_dude = pygame.image.load("Images/knightb.png").convert()
+        self.knight_shot = pygame.mixer.Sound("Sounds/knight.wav")
+        #self.theme_music = pygame.mixer.Sound("Sounds/theme_music.wav")
 
         self.flags = {}
         self.flags['game_over'] = False
@@ -44,7 +47,7 @@ class Game():
         self.flags['dragon_key'] = False
         self.flags['weapons_room_key'] = False
         self.flags['exit_key'] = False
-        self.flags['weapons_enabled'] = True
+        self.flags['weapons_enabled'] = False
         self.flags['you_win'] = False
         self.flags['display_screen'] = True
         self.flags['arrow_count'] = 30
@@ -211,6 +214,7 @@ class Game():
         if not self.flags['game_over'] and not self.flags['lava_over']:
             #Makes all the sprites move
             #moves the player
+            #self.theme_music.play()
             self.player.update(self.current_room.wall_list, self.current_room.enemy_sprites, self.current_room.boss)
 
             #moves the knights
@@ -219,8 +223,8 @@ class Game():
             #moves the boss
             #self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
             if self.current_room_name == 'dragon_cave':
-                self.current_room.boss.update(self.player.position()[0], self.player.position()[1])
-                if self.flags['dragon_fire_delay_counter'] % 40 == 0:
+                self.current_room.boss.update(self.player.position()[0], self.player.position()[1], self.bullet_list)
+                if self.flags['dragon_fire_delay_counter'] % 40 == 0 and self.dragon_alive:
                     self.fire = bullet_library.Bullet()
                     self.fire.rect.x = self.current_room.dragon.rect.x + 30
                     self.fire.rect.y = self.current_room.dragon.rect.y
@@ -230,12 +234,17 @@ class Game():
                         self.fire.way("left")
                     self.fire_list.add(self.fire)
                 self.flags['dragon_fire_delay_counter'] += 1
+                self.flags['stun_delay_counter'] = 1
                 if self.current_room.dragon.stun_check == 0:    
                     if self.flags['stun_delay_counter'] % 100 == 0:
-                        print(self.flags['stun_delay_counter'])
                         self.current_room.dragon.unstunned()
                         self.flags['stun_delay_counter'] = 1
                     self.flags['stun_delay_counter'] += 1
+                if self.current_room.dragon.lives == 0:
+                    self.current_room.boss.remove(self.current_room.dragon)
+                    self.dragon_alive = False
+                    self.current_room.exit_hallway_key_list.add(self.current_room.key)
+                    self.current_room.dragon.lives = -1
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
@@ -267,13 +276,14 @@ class Game():
                 bullet_hit_list = pygame.sprite.spritecollide(self.bullet, self.current_room.enemy_sprites, True)
                 for block in bullet_hit_list:
                     self.bullet_list.remove(self.bullet)
+                    self.knight_shot.play()
                 if self.bullet.rect.y < -10:
                     self.bullet_list.remove(self.bullet)
                     
             for fire in self.fire_list:
                 fire_hit_list = pygame.sprite.spritecollide(self.player, self.fire_list, False)
                 for block in fire_hit_list:
-                    self.player.lives -= 0
+                    self.player.lives -= 50
                 button1_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button1, self.fire_list, False)
                 for block in button1_hit_list:
                     if self.rooms['dragon_cave'].button1.image == self.rooms['dragon_cave'].button1.red_circle:
@@ -449,9 +459,10 @@ class Game():
             font = pygame.font.SysFont('Calibri', 25, True, False)
             text = font.render("Lives:" + str(self.player.lives), True, red)
             screen.blit(text, [150, 350])
-            text2 = font.render("Arrows:" + str(self.flags['arrow_count']), True, blue)
+            textarrows = font.render("Arrows:" + str(self.flags['arrow_count']), True, blue)
+            text_dragon_lives = font.render("Dragon Lives:" + str(self.rooms['dragon_cave'].dragon.lives), True, black)
             if self.flags['weapons_enabled'] == True:
-                screen.blit(text2, [500, 350])
+                screen.blit(textarrows, [500, 350])
             if self.boss_battle == True:
                 font = pygame.font.SysFont('Calibri', 75, True, False)
                 #screen.fill(white)
@@ -460,6 +471,8 @@ class Game():
                 text_x = screen.get_width() / 2 - text_rect.width / 2
                 text_y = screen.get_height() / 2 - text_rect.height / 2
                 screen.blit(text, [text_x, text_y])
+            if self.current_room_name == 'dragon_cave' and self.dragon_alive:
+                screen.blit(text_dragon_lives, [100, 100])
             #flips all this to the screen
             pygame.display.flip()
         elif self.flags['game_over'] == True and self.flags['you_win'] == True:
