@@ -51,7 +51,7 @@ class Game():
         self.flags['game_start'] = True
         self.flags['inu'] = 0
         self.flags['dragon_fire_delay_counter'] = 0
-        self.flags['stun_delay_counter'] = 0
+        self.flags['stun_delay_counter'] = 1
         self.flags['caleb_says_stands_for_something'] = 0
 
         #Main lists
@@ -230,6 +230,12 @@ class Game():
                         self.fire.way("left")
                     self.fire_list.add(self.fire)
                 self.flags['dragon_fire_delay_counter'] += 1
+                if self.current_room.dragon.stun_check == 0:    
+                    if self.flags['stun_delay_counter'] % 100 == 0:
+                        print(self.flags['stun_delay_counter'])
+                        self.current_room.dragon.unstunned()
+                        self.flags['stun_delay_counter'] = 1
+                    self.flags['stun_delay_counter'] += 1
 
             #Checks to see if the knight kills you
             if self.player.lives < 1:
@@ -270,24 +276,21 @@ class Game():
                     self.player.lives -= 0
                 button1_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button1, self.fire_list, False)
                 for block in button1_hit_list:
-                    self.rooms['dragon_cave'].button1.change_color()
-                    self.current_room.dragon.stunned()
+                    if self.rooms['dragon_cave'].button1.image == self.rooms['dragon_cave'].button1.red_circle:
+                        self.current_room.dragon.stunned()
+                        self.rooms['dragon_cave'].button1.change_color()
                     
                 button2_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button2, self.fire_list, False)
                 for block in button2_hit_list:
-                    self.rooms['dragon_cave'].button2.change_color()
-                    self.current_room.dragon.stunned()
+                    if self.rooms['dragon_cave'].button2.image == self.rooms['dragon_cave'].button2.red_circle:
+                        self.rooms['dragon_cave'].button2.change_color()
+                        self.current_room.dragon.stunned()
                     
                 button3_hit_list = pygame.sprite.spritecollide(self.rooms['dragon_cave'].button3, self.fire_list, False)
                 for block in button3_hit_list:
-                    self.rooms['dragon_cave'].button3.change_color()
-                    self.current_room.dragon.stunned()
-                
-                if self.current_room.dragon.stun_check == 0:    
-                    if self.flags['stun_delay_counter'] % 400 == 0:
-                        self.current_room.dragon.unstunned()
-                        self.flags['stun_delay_counter'] = 0
-                    self.flags['stun_delay_counter'] += 1
+                    if self.rooms['dragon_cave'].button3.image == self.rooms['dragon_cave'].button3.red_circle:
+                        self.rooms['dragon_cave'].button3.change_color()
+                        self.current_room.dragon.stunned()
                     
                 
 
